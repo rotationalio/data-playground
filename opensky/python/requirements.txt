@@ -1,0 +1,2 @@
+pyensign>=0.7.1b1
+python-opensky==0.0.10
