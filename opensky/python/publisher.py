@@ -1,17 +1,27 @@
 import json
 import asyncio
+import warnings
 from datetime import datetime
 
 from aiohttp import ClientSession, BasicAuth
+
 from pyensign.events import Event
 from pyensign.ensign import Ensign
 from python_opensky import OpenSky, BoundingBox
 
+# TODO: Python>=3.10 raises a DeprecationWarning: There is no current event loop. We need to fix this in PyEnsign!
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 class FlightsPublisher:
+    """
+    FlightsPublisher queries the OpenSky API for real-time flight data and publishes
+    flight vector events to Ensign.
+    """
+
     def __init__(
         self,
-        topic="flight-positions",
+        topic="flight-vectors",
         ensign_creds="",
         opensky_creds="secret/opensky.json",
         min_latitude=-66,
@@ -20,6 +30,39 @@ class FlightsPublisher:
         max_longitude=24,
         interval=60,
     ):
+        """
+        Create a FlightsPublisher to publish flight vectors to an Ensign topic. Nothing
+        will be published until run() is called.
+
+        Parameters
+        ----------
+        topic : str (default: "flight-vectors")
+            The name of the topic to publish to.
+
+        ensign_creds : str (optional)
+            The path to your Ensign credentials file. If not provided, credentials will
+            be read from the ENSIGN_CLIENT_ID and ENSIGN_CLIENT_SECRET environment
+            variables.
+
+        opensky_creds : str (default: "secret/opensky.json")
+            The path to your OpenSky credentials file. The credentials file must be a
+            JSON file with both a "username" and "password" field.
+
+        min_latitude : float (default: -66)
+            The minimum latitude of the bounding box to query for flight vectors.
+
+        max_latitude : float (default: 49)
+            The maximum latitude of the bounding box to query for flight vectors.
+
+        min_longitude : float (default: -124)
+            The minimum longitude of the bounding box to query for flight vectors.
+
+        max_longitude : float (default: 24)
+            The maximum longitude of the bounding box to query for flight vectors.
+
+        interval : int (default: 60)
+            The number of seconds to wait between queries to the OpenSky API.
+        """
         self.topic = topic
         self.bounding_box = BoundingBox(
             min_latitude=min_latitude,
@@ -36,7 +79,7 @@ class FlightsPublisher:
                 or "password" not in self.opensky_creds
             ):
                 raise ValueError(
-                    "Opensky credentials must contain both username and password"
+                    "OpenSky credentials must contain both username and password"
                 )
 
     def run(self):
@@ -68,15 +111,19 @@ class FlightsPublisher:
                 )
 
                 while True:
+                    # Call the OpenSky API to get a set of flight vectors in the
+                    # bounding box.
                     try:
-                        states = await opensky.get_states(
+                        response = await opensky.get_states(
                             bounding_box=self.bounding_box
                         )
                     except Exception as e:
                         print(e)
                         await asyncio.sleep(self.interval)
                         continue
-                    for event in self.states_to_events(states):
+
+                    # Publish each flight vector to Ensign.
+                    for event in self.vectors_to_events(response.states):
                         await self.ensign.publish(
                             self.topic,
                             event,
@@ -86,8 +133,12 @@ class FlightsPublisher:
 
                     await asyncio.sleep(self.interval)
 
-    def states_to_events(self, states):
-        for vector in states.states:
+    def vectors_to_events(self, vectors):
+        """
+        Convert state vectors to Ensign events. This is a generator function that
+        returns the events one at a time.
+        """
+        for vector in vectors:
             data = {
                 "icao24": vector.icao24,
                 "callsign": vector.callsign,
@@ -111,9 +162,8 @@ class FlightsPublisher:
             yield Event(
                 data=json.dumps(data).encode("utf-8"), mimetype="application/json"
             )
-            return
 
 
 if __name__ == "__main__":
-    publisher = FlightsPublisher()
+    publisher = FlightsPublisher(ensign_creds="secret/ensign.json")
     publisher.run()
