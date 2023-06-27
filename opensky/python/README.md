@@ -10,6 +10,8 @@ This implementation relies on the `python-opensky` package and the `pyensign` pa
 $ pip install -r requirements.txt
 ```
 
+Note: `python-opensky` is a wrapper around the official [OpenSky Python API](https://openskynetwork.github.io/opensky-api/python.html) that allows us to interact with OpenSky from async code.
+
 ## Publish Flight Data
 
 Create an [Ensign API key](https://rotational.app) with the permissions:
