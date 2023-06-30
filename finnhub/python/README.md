@@ -73,7 +73,7 @@ TradesPublisher(symbols=[<your-custom-symbols>])
 
 Create an [Ensign API key](https://rotational.app) with the permissions:
 
-```json
+```
 subscriber
 topics:create
 topics:read
