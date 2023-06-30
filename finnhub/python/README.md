@@ -1,10 +1,10 @@
-# OpenSky Python
+# FinnHub Python
 
 Connect to the Finnhub API to get access to real-time stock market data and play around with generating your own trading and investment strategies!
 
 ## Setup
 
-FinnHub requires the `websockets` package for connecting to its API and the example code will use on the `pyensign` package to create a publisher that will collect data from FinnHub and a subscriber that will run a model pipeline using the `river` package to generate predictions.  
+FinnHub requires the `websockets` package for connecting to its API and the example code will use the `pyensign` package to create a publisher that will collect data from FinnHub and a subscriber that will run a model pipeline using the `river` package to generate predictions.  
 
 Create a virtual environment
 
@@ -40,7 +40,7 @@ $ export ENSIGN_CLIENT_ID=<your-client-id>
 $ export ENSIGN_CLIENT_SECRET=<your-client-secret>
 ```
 
-Get a [free API key](https://finnhub.io/dashboard) from FinnHub. Specify this API key in the environment
+Get a [free API key](https://finnhub.io/dashboard) from FinnHub. Specify this API key in the environment.
 
 ```
 $ export FINNHUB_API_KEY=<your-finnhub-api-key>
@@ -94,7 +94,7 @@ subscriber = TradesSubscriber()
 subscriber.run()
 ```
 
-The subscriber takes the events and runs a model pipeline that generates trade predictions and publishes the predictions to a new `predictions` topic. You will periodically messages being printed to the screen that displays the symbol, timestamp, price, and the predicted price.
+The subscriber takes the events and runs a model pipeline that generates trade predictions and publishes the predictions to a new `predictions` topic. You will periodically see messages being printed to the screen that display the symbol, timestamp, price, and the predicted price.
 
 ```json
 {'symbol': 'AMZN', 'time': '12:18:03', 'price': '127.88', 'price_pred': '183.5796'}
