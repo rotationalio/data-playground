@@ -76,7 +76,7 @@ class EarthquakePublisher:
     def compose_query(self):
         """
         Combine the base URI with the time-related query params
-        Ask for only the data from the last 5 minutes
+        Ask for only the data from the last 15 minutes
 
         NOTE: There are other query params you can leverage to reduce the total results.
         For example, you can add the `minmagnitude` param to only get results for bigger
