@@ -48,7 +48,7 @@ I know it sounds weird to start the subscriber first, but that's asynchronous pr
 You'll see it wait for you:
 
 ```bash
-yrcomputersnickname:weather YOURNAMEHERE$ python subscriber.py
+yrcomputersnickname:python YOURNAMEHERE$ python subscriber.py
 
 
 ```
