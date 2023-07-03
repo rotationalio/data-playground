@@ -30,28 +30,26 @@ class SteamPublisher:
 
     async def recv_and_publish(self):
         topic_id = await self.ensign.topic_id(self.topic)
-        for i in range(4):
+        while True:
             try:
                 # Retrieve the player count for the current game/appid
-                game = self.gameList[i]
-                gameid = game["appid"]
-                response = requests.get(f"http://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid={game["appid"]}")
+                response = requests.get(f"http://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid={self.gameList[i]}")
                 response = json.loads(response.content) 
                 
                 # Convert the response to an event and publish it
-                print(topic_id)
-                for event in self.createEvents(response, game):
+                for event in self.createEvents(response, i):
                     await self.ensign.publish(topic_id, event, on_ack=self.handle_ack, on_nack=self.handle_nack)
+                    await asyncio.sleep(1)
             except Exception as e:
                 print(f"error: {e}")
                 await asyncio.sleep(1)
 
-    def createEvents(self, response, game):
-        gameName = game["name"]
+    def createEvents(self, response, i):
+        gameName = self.gameList[i]["name"]
         if gameName == '':
             gameName = "N/A"
         data = {"game": gameName, 
-                "id": game["appid"], 
+                "id": self.gameList[i]["appid"], 
                 "count": response["response"]["player_count"]}
         print(data)
         event = Event(json.dumps(data).encode("utf-8"), mimetype="application/json")
