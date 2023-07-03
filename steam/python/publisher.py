@@ -12,7 +12,6 @@ class SteamPublisher:
     SteamPublisher queries the steam API and publishes events to Ensign.
     """
     topic="steam"
-    api=""
 
     def __init__(self, topic="") -> None:
         if topic != "":
