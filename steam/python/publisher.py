@@ -32,27 +32,38 @@ class SteamPublisher:
         topic_id = await self.ensign.topic_id(self.topic)
         for i in range(4):
             try:
-                # Retrieve the player count for the current game
-                response = requests.get(f"http://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid={self.gameList[i]}")
+                # Retrieve the player count for the current game/appid
+                game = self.gameList[i]
+                gameid = game["appid"]
+                response = requests.get(f"http://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid={game["appid"]}")
                 response = json.loads(response.content) 
                 
                 # Convert the response to an event and publish it
-                data = {"game": self.gameList[i]["name"], 
-                        "id": self.gameList[i]["appid"], 
-                        "count": response["response"]["player_count"]}
-                event = Event(json.dumps(data).encode("utf-8"), mimetype="application/json")
-                await self.ensign.publish(topic_id, event, on_ack=handle_ack, on_nack=handle_nack)
+                print(topic_id)
+                for event in self.createEvents(response, game):
+                    await self.ensign.publish(topic_id, event, on_ack=self.handle_ack, on_nack=self.handle_nack)
             except Exception as e:
                 print(f"error: {e}")
                 await asyncio.sleep(1)
 
-async def handle_ack(ack):
-    ts = datetime.fromtimestamp(ack.committed.seconds + ack.committed.nanos / 1e9)
-    print(f"Event committed at {ts}")
+    def createEvents(self, response, game):
+        gameName = game["name"]
+        if gameName == '':
+            gameName = "N/A"
+        data = {"game": gameName, 
+                "id": game["appid"], 
+                "count": response["response"]["player_count"]}
+        print(data)
+        event = Event(json.dumps(data).encode("utf-8"), mimetype="application/json")
+        yield event
 
-async def handle_nack(nack):
-    print(f"Could not commit event {nack.id} with error {nack.code}: {nack.error}")
+    async def handle_ack(self, ack):
+        ts = datetime.fromtimestamp(ack.committed.seconds + ack.committed.nanos / 1e9)
+        print(f"Event committed at {ts}")
+
+    async def handle_nack(self, nack):
+        print(f"Could not commit event {nack.id} with error {nack.code}: {nack.error}")
 
 if __name__ == "__main__":
-    publisher = SteamPublisher()
+    publisher = SteamPublisher("steam")
     publisher.run()
