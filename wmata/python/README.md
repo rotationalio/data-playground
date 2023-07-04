@@ -1,6 +1,6 @@
 # Accessing Real-time Metro Updates with Python
 
-Washington DC's partly underground metro line (WMATA or "wuh-mah-tah"), is famously not the U-Bahn 😂 If you want to know when you train will really arrive, you need this feed!
+Washington DC's partly underground metro line (WMATA or "wuh-mah-tah"), is famously not the U-Bahn 😂 If you want to know when your train will really arrive, you need this feed!
 
 Metro interruptions are also a great way to model complex systems, so this feed can also be integrated with other feeds (like [weather](https://github.com/rotationalio/data-playground/tree/main/weather/python)), to build a more complete picture of the interactions between the natural world and the human-made world.
 
