@@ -1,14 +1,10 @@
 import json
 import asyncio
-import warnings
 from datetime import datetime, timedelta
 
 import requests
 from pyensign.events import Event
 from pyensign.ensign import Ensign
-
-# TODO Python>3.10 needs to ignore DeprecationWarning: There is no current event loop
-warnings.filterwarnings("ignore")
 
 # TODO: replace with YOU - your email and app details :)
 ME = "(https://rotational.io/data-playground/us-geological, earthquakes@rotational.io)"
@@ -19,6 +15,7 @@ class EarthquakePublisher:
     EarthquakePublisher queries the USGS API for natural disaster updates and publishes them
     as events to Ensign.
     """
+
     def __init__(self, topic="earthquakes-json", interval=900, user=ME):
         """
         Parameters
@@ -59,8 +56,7 @@ class EarthquakePublisher:
         This is optional for you, but can be very helpful for communication in
         asynchronous contexts!
         """
-        ts = datetime.fromtimestamp(
-            ack.committed.seconds + ack.committed.nanos / 1e9)
+        ts = datetime.fromtimestamp(ack.committed.seconds + ack.committed.nanos / 1e9)
         print(f"Event committed at {ts}")
 
     async def print_nack(self, nack):
@@ -99,12 +95,14 @@ class EarthquakePublisher:
         geo_events = message.get("features", None)
         if geo_events is None:
             raise Exception(
-                "unexpected response from usgs request, no geo-events found")
+                "unexpected response from usgs request, no geo-events found"
+            )
         for geo_event in geo_events:
             details = geo_event.get("properties", None)
             if details is None:
                 raise Exception(
-                    "unable to parse usgs api response, no geo-event details found")
+                    "unable to parse usgs api response, no geo-event details found"
+                )
 
             # There's a lot available! For this example, we'll just parse out a few
             # fields from the USGS API response:
@@ -151,7 +149,7 @@ class EarthquakePublisher:
         """
         Run the publisher forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.recv_and_publish())
+        asyncio.run(self.recv_and_publish())
 
 
 if __name__ == "__main__":
