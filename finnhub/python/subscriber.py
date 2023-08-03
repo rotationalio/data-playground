@@ -31,7 +31,7 @@ class TradesSubscriber:
         """
         Run the subscriber forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.subscribe())
+        asyncio.run(self.subscribe())
 
     def build_model(self):
         model = compose.Pipeline(

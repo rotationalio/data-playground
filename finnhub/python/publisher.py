@@ -32,7 +32,7 @@ class TradesPublisher:
             raise ValueError("FINNHUB_API_KEY environment variable not set.")
 
         # Run the publisher.
-        asyncio.get_event_loop().run_until_complete(self.recv_and_publish(f"wss://ws.finnhub.io?token={token}"))
+        asyncio.run(self.recv_and_publish(f"wss://ws.finnhub.io?token={token}"))
 
     async def recv_and_publish(self, uri):
         """
