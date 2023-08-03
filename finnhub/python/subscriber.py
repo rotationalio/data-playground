@@ -15,7 +15,7 @@ from utils import handle_ack, handle_nack
 class TradesSubscriber:
     """
     TradesSubscriber subscribes to trading events from Ensign and runs an
-    online model pipeline and publishes predictions to a new topic.
+    online model pipeline and publishes predictions to a new topic
     """
 
     def __init__(self, sub_topic="trades", pub_topic="predictions"):
