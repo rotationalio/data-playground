@@ -1,12 +1,11 @@
 import asyncio
 import json
-import os
 
 import websockets
 
 from pyensign.events import Event
 from pyensign.ensign import Ensign
-
+from config import CLIENT_ID,CLIENT_SECRET,FINNHUB_API_KEY
 from utils import handle_ack, handle_nack
 
 
@@ -18,14 +17,17 @@ class TradesPublisher:
     def __init__(self, symbols=["AAPL", "MSFT", "AMZN"], topic="trades"):
         self.symbols = symbols
         self.topic = topic
-        self.ensign = Ensign()
+        self.ensign = Ensign(
+                             client_id = CLIENT_ID,
+                             client_secret = CLIENT_SECRET
+                             )
 
     def run(self):
         """
         Run the publisher forever.
         """
         # Load finnhub API key from environment variable.
-        token = os.environ.get("FINNHUB_API_KEY")
+        token = FINNHUB_API_KEY 
         if token is None:
             raise ValueError("FINNHUB_API_KEY environment variable not set.")
 

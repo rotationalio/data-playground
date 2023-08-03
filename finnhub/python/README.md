@@ -87,6 +87,13 @@ $ export ENSIGN_CLIENT_ID=<your-client-id>
 $ export ENSIGN_CLIENT_SECRET=<your-client-secret>
 ```
 
+Or you can create config.py file within your python folder and provide Ensign credentials as follows :
+'''
+CLIENT_ID = <your-client-id>
+CLIENT_SECRET = <your-client-secret> 
+FINNHUB_API_KEY = <your-finnhub_api_key>
+'''
+
 Create a subscriber and start consuming events.
 
 ```python
