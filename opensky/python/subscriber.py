@@ -36,7 +36,7 @@ class FlightsSubscriber:
         """
         Run the subscriber forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.subscribe())
+        asyncio.run(self.subscribe())
 
     async def handle_event(self, event):
         """
@@ -57,10 +57,11 @@ class FlightsSubscriber:
         Subscribe to the flight vectors topic and parse the events.
         """
         id = await self.ensign.topic_id(self.topic)
-        await self.ensign.subscribe(id, on_event=self.handle_event)
+        async for event in self.ensign.subscribe(id):
+            await self.handle_event(event)
         await asyncio.Future()
 
 
 if __name__ == "__main__":
-    subscriber = FlightsSubscriber(ensign_creds="secret/ensign.json")
+    subscriber = FlightsSubscriber(ensign_creds="secret/falcon_subscriber.json")
     subscriber.run()

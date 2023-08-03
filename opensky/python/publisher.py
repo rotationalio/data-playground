@@ -22,7 +22,7 @@ class FlightsPublisher:
     def __init__(
         self,
         topic="flight-vectors",
-        ensign_creds="",
+        ensign_creds="secret/falcon_publisher.json",
         opensky_creds="secret/opensky.json",
         min_latitude=-66,
         max_latitude=49,
@@ -86,7 +86,7 @@ class FlightsPublisher:
         """
         Run the publisher forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.recv_and_publish())
+        asyncio.run(self.recv_and_publish())
 
     async def print_ack(self, ack):
         ts = datetime.fromtimestamp(ack.committed.seconds + ack.committed.nanos / 1e9)
@@ -165,5 +165,5 @@ class FlightsPublisher:
 
 
 if __name__ == "__main__":
-    publisher = FlightsPublisher(ensign_creds="secret/ensign.json")
+    publisher = FlightsPublisher(ensign_creds="secret/falcon_publisher.json")
     publisher.run()

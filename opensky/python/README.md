@@ -42,7 +42,7 @@ Create an [OpenSky account](https://opensky-network.org/) and API key. Create a 
 Create a publisher and start publishing events.
 
 ```python
-publisher = FlightsPublisher(ensign_creds=<path-to-ensign-creds>, opensky_creds=<path-to-opensky-creds>)
+publisher = FlightsPublisher(ensign_creds=<path-to-ensign-creds>, opensky_creds=<path-to-opensky-creds-json-file>)
 publisher.run()
 ```
 
@@ -96,7 +96,7 @@ $ export ENSIGN_CLIENT_SECRET=<your-client-secret>
 Create a subscriber and start consuming events.
 
 ```python
-subscriber = FlightsSubscriber(ensign_creds=<path-to-ensign-creds>)
+subscriber = FlightsSubscriber(ensign_creds=<path-to-ensign-creds-json-file>)
 subscriber.run()
 ```
 
