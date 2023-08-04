@@ -1,6 +1,5 @@
 import json
 import asyncio
-import warnings
 from datetime import datetime
 
 from aiohttp import ClientSession, BasicAuth
@@ -8,9 +7,6 @@ from aiohttp import ClientSession, BasicAuth
 from pyensign.events import Event
 from pyensign.ensign import Ensign
 from python_opensky import OpenSky, BoundingBox
-
-# TODO: Python>=3.10 raises a DeprecationWarning: There is no current event loop. We need to fix this in PyEnsign!
-warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 class FlightsPublisher:
@@ -165,5 +161,5 @@ class FlightsPublisher:
 
 
 if __name__ == "__main__":
-    publisher = FlightsPublisher(ensign_creds="secret/falcon_publisher.json")
+    publisher = FlightsPublisher(ensign_creds="secret/ensign_cred.json")
     publisher.run()

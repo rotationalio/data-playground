@@ -1,13 +1,8 @@
 import json
 import asyncio
-import warnings
 
 from pyensign.ensign import Ensign
 from pyensign.api.v1beta1.ensign_pb2 import Nack
-
-# TODO: Python>=3.10 raises a DeprecationWarning: There is no current event loop. We need to fix this in PyEnsign!
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-
 
 class FlightsSubscriber:
     """
@@ -59,7 +54,6 @@ class FlightsSubscriber:
         id = await self.ensign.topic_id(self.topic)
         async for event in self.ensign.subscribe(id):
             await self.handle_event(event)
-        await asyncio.Future()
 
 
 if __name__ == "__main__":
