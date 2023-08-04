@@ -57,5 +57,5 @@ class FlightsSubscriber:
 
 
 if __name__ == "__main__":
-    subscriber = FlightsSubscriber(ensign_creds="secret/falcon_subscriber.json")
+    subscriber = FlightsSubscriber(ensign_creds="secret/ensign_cred_subscriber.json")
     subscriber.run()

@@ -161,5 +161,5 @@ class FlightsPublisher:
 
 
 if __name__ == "__main__":
-    publisher = FlightsPublisher(ensign_creds="secret/ensign_cred.json")
+    publisher = FlightsPublisher(ensign_creds="secret/ensign_cred_publisher.json")
     publisher.run()

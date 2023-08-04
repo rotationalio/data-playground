@@ -1,11 +1,11 @@
 import asyncio
 import json
+import os
 
 import websockets
 
 from pyensign.events import Event
 from pyensign.ensign import Ensign
-from config import CLIENT_ID,CLIENT_SECRET,FINNHUB_API_KEY
 from utils import handle_ack, handle_nack
 
 
@@ -14,25 +14,22 @@ class TradesPublisher:
     TradesPublisher queries an API for trading updates and publishes events to Ensign.
     """
 
-    def __init__(self, symbols=["AAPL", "MSFT", "AMZN"], topic="trades"):
+    def __init__(self, symbols=["AAPL", "MSFT", "AMZN"], topic="trades",ensign_creds=''):
         self.symbols = symbols
         self.topic = topic
-        self.ensign = Ensign(
-                             client_id = CLIENT_ID,
-                             client_secret = CLIENT_SECRET
-                             )
+        self.ensign = Ensign(cred_path=ensign_creds)
 
     def run(self):
         """
         Run the publisher forever.
         """
         # Load finnhub API key from environment variable.
-        token = FINNHUB_API_KEY 
+        token = os.environ.get('FINNHUB_API_KEY')
         if token is None:
             raise ValueError("FINNHUB_API_KEY environment variable not set.")
 
         # Run the publisher.
-        asyncio.get_event_loop().run_until_complete(self.recv_and_publish(f"wss://ws.finnhub.io?token={token}"))
+        asyncio.run(self.recv_and_publish(f"wss://ws.finnhub.io?token={token}"))
 
     async def recv_and_publish(self, uri):
         """
@@ -72,8 +69,7 @@ class TradesPublisher:
                 yield Event(json.dumps(data).encode("utf-8"), mimetype="application/json")
         else:
             raise ValueError(f"Unknown message type: {message_type}")
-        
 
 if __name__ == "__main__":
-    publisher = TradesPublisher()
+    publisher = TradesPublisher(ensign_creds='secret/ensign_publisher.json')
     publisher.run()

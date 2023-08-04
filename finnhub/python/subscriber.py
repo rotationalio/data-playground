@@ -7,7 +7,6 @@ from pyensign.ensign import Ensign
 from river import compose
 from river import linear_model
 from river import preprocessing
-from config import CLIENT_ID,CLIENT_SECRET
 
 from utils import handle_ack, handle_nack
 
@@ -18,12 +17,11 @@ class TradesSubscriber:
     online model pipeline and publishes predictions to a new topic.
     """
 
-    def __init__(self, sub_topic="trades", pub_topic="predictions"):
+    def __init__(self, sub_topic="trades", pub_topic="predictions",ensign_cred=''):
         self.sub_topic = sub_topic
         self.pub_topic = pub_topic
         self.ensign = Ensign(
-                             client_id = CLIENT_ID,
-                             client_secret = CLIENT_SECRET
+                             cred_path=ensign_cred
                              )
         self.model = self.build_model()
     
@@ -31,7 +29,7 @@ class TradesSubscriber:
         """
         Run the subscriber forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.subscribe())
+        asyncio.run(self.subscribe())
 
     def build_model(self):
         model = compose.Pipeline(
@@ -92,14 +90,9 @@ class TradesSubscriber:
         # Subscribe to the topic.
         # self.run_model_pipeline is a callback function that gets executed when 
         # a new event arrives in the topic
-        #await self.ensign.subscribe(topic_id, on_event=self.run_model_pipeline)
         async for event in self.ensign.subscribe(topic_id):
-            await self.run_model_pipeline(event)
-        # create a Future and await its result - this will ensure that the
-        # subscriber will run forever since nothing in the code is setting the
-        # result of the Future
-        await asyncio.Future()
+             await self.run_model_pipeline(event)
 
 if __name__ == "__main__":
-    subscriber = TradesSubscriber()
+    subscriber = TradesSubscriber(ensign_cred='secret/ensign_cred.json')
     subscriber.run()

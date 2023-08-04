@@ -1,5 +1,5 @@
-/python/config.py
+venv
 /python/secret
-/python/.Rhistory
 *.DS_Store
 /python/*.DS_Store
+/python/__pycache__
