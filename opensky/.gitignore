@@ -1,2 +1,4 @@
 python/secret
 python/config.py
+*.DS_Store
+/python/*.DS_Store
