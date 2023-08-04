@@ -1,3 +1,5 @@
 /python/config.py
 /python/secret
 /python/.Rhistory
+*.DS_Store
+/python/*.DS_Store
