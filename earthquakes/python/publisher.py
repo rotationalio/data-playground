@@ -7,6 +7,7 @@ from pyensign.events import Event
 from pyensign.ensign import Ensign
 
 # TODO: replace with YOU - your email and app details :)
+# These are User Agent details that will be sent to the USGS API
 ME = "(https://rotational.io/data-playground/us-geological, earthquakes@rotational.io)"
 
 
