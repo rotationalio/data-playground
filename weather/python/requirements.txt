@@ -1,0 +1,10 @@
+certifi==2023.5.7
+charset-normalizer==3.1.0
+grpcio==1.56.0
+idna==3.4
+protobuf==4.23.3
+pyensign>=0.8b0
+PyJWT==2.7.0
+python-ulid==1.1.0
+requests==2.31.0
+urllib3==2.0.3

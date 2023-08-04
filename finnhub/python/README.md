@@ -4,7 +4,7 @@ Connect to the Finnhub API to get access to real-time stock market data and play
 
 ## Setup
 
-FinnHub requires the `websockets` package for connecting to its API and the example code will use the `pyensign` package to create a publisher that will collect data from FinnHub and a subscriber that will run a model pipeline using the `river` package to generate predictions.  
+FinnHub requires the `websockets` package for connecting to its API and the example code will use the `pyensign` package to create a publisher that will collect data from FinnHub and a subscriber that will run a model pipeline using the `river` package to generate predictions.
 
 Create a virtual environment
 

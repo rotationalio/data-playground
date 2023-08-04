@@ -1,44 +1,28 @@
 import json
 import asyncio
-import warnings
 from datetime import datetime
 
 import requests
 from pyensign.events import Event
 from pyensign.ensign import Ensign
 
-# TODO Python>3.10 needs to ignore DeprecationWarning: There is no current event loop
-warnings.filterwarnings("ignore")
-
 # TODO: replace with YOU - your email and app details :)
 ME = "(https://rotational.io/data-playground/noaa/, weather@rotational.io)"
 
 # TODO: these are memorable for ME. Replace with the locations of interest to YOU
 LOCS = {
-    "north_pole": {
-        "lat": "64.7511",
-        "long": "-147.3494"
-    },
-    "cafe_du_monde": {
-        "lat": "29.957684",
-        "long": "-90.061892"
-    },
-    "los_alamos": {
-        "lat": "35.897123",
-        "long": "-106.278471"
-    },
-    "case_western": {
-        "lat": "41.504245",
-        "long": "-81.608319"
-    },
+    "north_pole": {"lat": "64.7511", "long": "-147.3494"},
+    "cafe_du_monde": {"lat": "29.957684", "long": "-90.061892"},
+    "los_alamos": {"lat": "35.897123", "long": "-106.278471"},
+    "case_western": {"lat": "41.504245", "long": "-81.608319"},
 }
-
 
 
 class WeatherPublisher:
     """
     WeatherPublisher queries an API for weather updates and publishes events to Ensign.
     """
+
     def __init__(self, topic="noaa-reports-json", interval=60, locations=LOCS, user=ME):
         """
         Initialize a WeatherPublisher by specifying a topic, locations, and other user-
@@ -87,8 +71,7 @@ class WeatherPublisher:
         This is optional for you, but can be very helpful for communication in
         asynchronous contexts!
         """
-        ts = datetime.fromtimestamp(
-            ack.committed.seconds + ack.committed.nanos / 1e9)
+        ts = datetime.fromtimestamp(ack.committed.seconds + ack.committed.nanos / 1e9)
         print(f"Event committed at {ts}")
 
     async def print_nack(self, nack):
@@ -123,7 +106,7 @@ class WeatherPublisher:
         """
         Run the publisher forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.recv_and_publish())
+        asyncio.run(self.recv_and_publish())
 
     async def recv_and_publish(self):
         """
