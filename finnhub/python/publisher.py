@@ -25,12 +25,12 @@ class TradesPublisher:
         """
         Run the publisher forever.
         """
-        # Load finnhub API key from environment variable.
+        # Load finnhub API key from environment variable
         token = os.environ.get("FINNHUB_API_KEY") 
         if token is None:
             raise ValueError("FINNHUB_API_KEY environment variable not set.")
 
-        # Run the publisher.
+        # Run the publisher
         asyncio.run(self.recv_and_publish(f"wss://ws.finnhub.io?token={token}"))
 
     async def recv_and_publish(self, uri):

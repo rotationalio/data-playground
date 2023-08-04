@@ -71,7 +71,7 @@ class TradesSubscriber:
 
         # create an Ensign event and publish to the predictions topic
         event = Event(json.dumps(message).encode("utf-8"), mimetype="application/json")
-        # Get the topic ID from the topic name.
+        # Get the topic ID from the topic name
         topic_id = await self.ensign.topic_id(self.pub_topic)
         await self.ensign.publish(topic_id, event, on_ack=handle_ack, on_nack=handle_nack)
 
@@ -81,10 +81,10 @@ class TradesSubscriber:
         online model pipeline and publish predictions to a new topic.
         """
 
-        # Get the topic ID from the topic name.
+        # Get the topic ID from the topic name
         topic_id = await self.ensign.topic_id(self.sub_topic)
 
-        # Subscribe to the topic.
+        # Subscribe to the topic
         # self.run_model_pipeline is a callback function that gets executed when 
         # a new event arrives in the topic
         async for event in self.ensign.subscribe(topic_id):
