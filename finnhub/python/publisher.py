@@ -15,10 +15,10 @@ class TradesPublisher:
     TradesPublisher queries an API for trading updates and publishes events to Ensign.
     """
 
-    def __init__(self, symbols=["AAPL", "MSFT", "AMZN"], topic="trades"):
+    def __init__(self, symbols=["AAPL", "MSFT", "AMZN"], topic="trades",ensign_creds=''):
         self.symbols = symbols
         self.topic = topic
-        self.ensign = Ensign()
+        self.ensign = Ensign(cred_path=ensign_creds)
 
     def run(self):
         """
@@ -30,7 +30,7 @@ class TradesPublisher:
             raise ValueError("FINNHUB_API_KEY environment variable not set.")
 
         # Run the publisher.
-        asyncio.get_event_loop().run_until_complete(self.recv_and_publish(f"wss://ws.finnhub.io?token={token}"))
+        asyncio.run(self.recv_and_publish(f"wss://ws.finnhub.io?token={token}"))
 
     async def recv_and_publish(self, uri):
         """
@@ -73,5 +73,5 @@ class TradesPublisher:
         
 
 if __name__ == "__main__":
-    publisher = TradesPublisher()
+    publisher = TradesPublisher(ensign_creds='secret/ensign_cred.json')
     publisher.run()

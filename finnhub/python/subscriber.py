@@ -27,7 +27,7 @@ class TradesSubscriber:
         """
         Run the subscriber forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.subscribe())
+        asyncio.run(self.subscribe())
 
     def build_model(self):
         model = compose.Pipeline(
@@ -87,11 +87,8 @@ class TradesSubscriber:
         # Subscribe to the topic.
         # self.run_model_pipeline is a callback function that gets executed when 
         # a new event arrives in the topic
-        await self.ensign.subscribe(topic_id, on_event=self.run_model_pipeline)
-        # create a Future and await its result - this will ensure that the
-        # subscriber will run forever since nothing in the code is setting the
-        # result of the Future
-        await asyncio.Future()
+        async for event in self.ensign.subscribe(topic_id):
+             await self.run_model_pipeline(event)
 
 if __name__ == "__main__":
     subscriber = TradesSubscriber()
