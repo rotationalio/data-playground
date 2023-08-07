@@ -22,7 +22,7 @@ topics:create
 topics:read
 ```
 
-Save your Ensign API key credentials to a JSON file.
+Save your Ensign API key credentials to a `secret/publish_creds.json`, or any safe location in your file system.
 
 Alternatively, specify Ensign credentials in the environment.
 ```
@@ -42,7 +42,7 @@ Create an [OpenSky account](https://opensky-network.org/) and API key. Create a 
 Create a publisher and start publishing events.
 
 ```python
-publisher = FlightsPublisher(ensign_creds=<path-to-ensign-creds>, opensky_creds=<path-to-opensky-creds-json-file>)
+publisher = FlightsPublisher(ensign_creds=<path-to-ensign-creds>, opensky_creds=<path-to-opensky-creds>)
 publisher.run()
 ```
 
@@ -85,7 +85,7 @@ subscriber
 topics:read
 ```
 
-Save your Ensign API key credentials to a JSON file.
+Save your Ensign API key credentials to `secret/subscribe_creds.json`, or any safe location in you file system.
 
 Alternatively, specify Ensign credentials in the environment.
 ```

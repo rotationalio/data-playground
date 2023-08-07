@@ -1,4 +1,5 @@
-python/secret
+python/secret/*
+!.gitkeep
 python/config.py
 *.DS_Store
 /python/*.DS_Store

@@ -34,6 +34,8 @@ topics:create
 topics:read
 ```
 
+Save your Ensign API key credentials to `secret/publish_creds.json`, or any safe location in your file system.
+
 Alternatively, specify Ensign credentials in the environment.
 ```
 $ export ENSIGN_CLIENT_ID=<your-client-id>
@@ -46,10 +48,10 @@ Get a [free API key](https://finnhub.io/dashboard) from FinnHub. Specify this AP
 $ export FINNHUB_API_KEY=<your-finnhub-api-key>
 ```
 
-Create a publisher and start publishing events.
+Create a publisher and start publishing events. Remember to set the `ensign_creds` argument to wherever you saved your publish credentials.
 
 ```python
-publisher = TradesPublisher()
+publisher = TradesPublisher(ensign_creds="secret/publish_creds.json")
 publisher.run()
 ```
 
@@ -81,23 +83,18 @@ topics:read
 
 Note that since this subscriber will also publish to a new topic (which is not necessary if the subscriber is only consuming messages), it will require the `topics:create` permission.
 
+Save the Ensign API key credentials to `secret/subscribe_creds.json`, or any safe location in your file system.
+
 Alternatively, specify Ensign credentials in the environment.
 ```
 $ export ENSIGN_CLIENT_ID=<your-client-id>
 $ export ENSIGN_CLIENT_SECRET=<your-client-secret>
 ```
 
-Or you can create config.py file within your python folder and provide Ensign credentials as follows :
-'''
-CLIENT_ID = <your-client-id>
-CLIENT_SECRET = <your-client-secret> 
-FINNHUB_API_KEY = <your-finnhub_api_key>
-'''
-
-Create a subscriber and start consuming events.
+Create a subscriber and start consuming events. Remember to set the `ensign_creds` argument to wherever you saved your subscribe credentials.
 
 ```python
-subscriber = TradesSubscriber()
+subscriber = TradesSubscriber(ensign_creds="secret/subscribe_creds.json")
 subscriber.run()
 ```
 

@@ -18,7 +18,7 @@ class FlightsPublisher:
     def __init__(
         self,
         topic="flight-vectors",
-        ensign_creds="secret/falcon_publisher.json",
+        ensign_creds="secret/publish_creds.json",
         opensky_creds="secret/opensky.json",
         min_latitude=-66,
         max_latitude=49,
@@ -161,5 +161,5 @@ class FlightsPublisher:
 
 
 if __name__ == "__main__":
-    publisher = FlightsPublisher(ensign_creds="secret/ensign_cred_publisher.json")
+    publisher = FlightsPublisher(ensign_creds="secret/publish_creds.json")
     publisher.run()

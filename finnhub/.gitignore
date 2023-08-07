@@ -1,5 +1,6 @@
 venv
-/python/secret
+/python/secret/*
+!.gitkeep
 *.DS_Store
 /python/*.DS_Store
 /python/__pycache__

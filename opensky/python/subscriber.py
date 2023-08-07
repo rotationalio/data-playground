@@ -4,6 +4,7 @@ import asyncio
 from pyensign.ensign import Ensign
 from pyensign.api.v1beta1.ensign_pb2 import Nack
 
+
 class FlightsSubscriber:
     """
     FlightsSubscriber consumes flight vector events from Ensign.
@@ -57,5 +58,5 @@ class FlightsSubscriber:
 
 
 if __name__ == "__main__":
-    subscriber = FlightsSubscriber(ensign_creds="secret/ensign_cred_subscriber.json")
+    subscriber = FlightsSubscriber(ensign_creds="secret/subscribe_creds.json")
     subscriber.run()
