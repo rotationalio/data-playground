@@ -1,12 +1,8 @@
 import json
 import asyncio
-import warnings
 
+from pyensign import nack
 from pyensign.ensign import Ensign
-from pyensign.api.v1beta1.ensign_pb2 import Nack
-
-# TODO Python>3.10 needs to ignore DeprecationWarning: There is no current event loop
-warnings.filterwarnings("ignore")
 
 
 class EarthquakeSubscriber:
@@ -32,7 +28,7 @@ class EarthquakeSubscriber:
         """
         Run the subscriber forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.subscribe())
+        asyncio.run(self.subscribe())
 
     async def handle_event(self, event):
         """
@@ -42,7 +38,7 @@ class EarthquakeSubscriber:
             data = json.loads(event.data)
         except json.JSONDecodeError:
             print("Received invalid JSON in event payload:", event.data)
-            await event.nack(Nack.Code.UNKNOWN_TYPE)
+            await event.nack(nack.UnknownType)
             return
 
         print("New earthquake report received:", data)
@@ -53,8 +49,8 @@ class EarthquakeSubscriber:
         Subscribe to the earthquake topic and parse the events.
         """
         id = await self.ensign.topic_id(self.topic)
-        await self.ensign.subscribe(id, on_event=self.handle_event)
-        await asyncio.Future()
+        async for event in self.ensign.subscribe(id):
+            await self.handle_event(event)
 
 
 if __name__ == "__main__":
