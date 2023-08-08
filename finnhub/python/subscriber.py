@@ -17,25 +17,25 @@ class TradesSubscriber:
     online model pipeline and publishes predictions to a new topic.
     """
 
-    def __init__(self, sub_topic="trades", pub_topic="predictions"):
+    def __init__(self, sub_topic="trades", pub_topic="predictions", ensign_creds=""):
         self.sub_topic = sub_topic
         self.pub_topic = pub_topic
-        self.ensign = Ensign()
+        self.ensign = Ensign(cred_path=ensign_creds)
         self.model = self.build_model()
-    
+
     def run(self):
         """
         Run the subscriber forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.subscribe())
+        asyncio.run(self.subscribe())
 
     def build_model(self):
         model = compose.Pipeline(
-            ('scale', preprocessing.StandardScaler()),
-            ('lin_reg', linear_model.LinearRegression())
+            ("scale", preprocessing.StandardScaler()),
+            ("lin_reg", linear_model.LinearRegression()),
         )
         return model
-    
+
     def get_timestamp(self, epoch):
         """
         converts unix epoch to datetime
@@ -43,7 +43,7 @@ class TradesSubscriber:
         epoch_time = epoch / 1000.0
         timestamp = datetime.fromtimestamp(epoch_time)
         return timestamp
-    
+
     async def run_model_pipeline(self, event):
         """
         Train an online model and publish predictions to a new topic.
@@ -53,7 +53,7 @@ class TradesSubscriber:
         # convert unix epoch to datetime
         timestamp = self.get_timestamp(data["timestamp"])
         # extract the microsecond component and use it as a model feature
-        x = {"microsecond" : timestamp.microsecond}
+        x = {"microsecond": timestamp.microsecond}
         # generate a prediction
         price_pred = round(self.model.predict_one(x), 4)
         price = data["price"]
@@ -72,8 +72,9 @@ class TradesSubscriber:
         event = Event(json.dumps(message).encode("utf-8"), mimetype="application/json")
         # Get the topic ID from the topic name.
         topic_id = await self.ensign.topic_id(self.pub_topic)
-        await self.ensign.publish(topic_id, event, on_ack=handle_ack, on_nack=handle_nack)
-
+        await self.ensign.publish(
+            topic_id, event, on_ack=handle_ack, on_nack=handle_nack
+        )
 
     async def subscribe(self):
         """
@@ -85,14 +86,12 @@ class TradesSubscriber:
         topic_id = await self.ensign.topic_id(self.sub_topic)
 
         # Subscribe to the topic.
-        # self.run_model_pipeline is a callback function that gets executed when 
+        # self.run_model_pipeline is a callback function that gets executed when
         # a new event arrives in the topic
-        await self.ensign.subscribe(topic_id, on_event=self.run_model_pipeline)
-        # create a Future and await its result - this will ensure that the
-        # subscriber will run forever since nothing in the code is setting the
-        # result of the Future
-        await asyncio.Future()
+        async for event in self.ensign.subscribe(topic_id):
+            await self.run_model_pipeline(event)
+
 
 if __name__ == "__main__":
-    subscriber = TradesSubscriber()
+    subscriber = TradesSubscriber(ensign_creds="secret/subscribe_creds.json")
     subscriber.run()

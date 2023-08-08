@@ -22,7 +22,7 @@ topics:create
 topics:read
 ```
 
-Save your Ensign API key credentials to a JSON file.
+Save your Ensign API key credentials to a `secret/publish_creds.json`, or any safe location in your file system.
 
 Alternatively, specify Ensign credentials in the environment.
 ```
@@ -85,7 +85,7 @@ subscriber
 topics:read
 ```
 
-Save your Ensign API key credentials to a JSON file.
+Save your Ensign API key credentials to `secret/subscribe_creds.json`, or any safe location in you file system.
 
 Alternatively, specify Ensign credentials in the environment.
 ```
@@ -96,7 +96,7 @@ $ export ENSIGN_CLIENT_SECRET=<your-client-secret>
 Create a subscriber and start consuming events.
 
 ```python
-subscriber = FlightsSubscriber(ensign_creds=<path-to-ensign-creds>)
+subscriber = FlightsSubscriber(ensign_creds=<path-to-ensign-creds-json-file>)
 subscriber.run()
 ```
 

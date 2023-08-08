@@ -1,2 +1,2 @@
-pyensign>=0.7.1b1
-python-opensky==0.0.10
+pyensign>=0.8.0b0
+python-opensky==0.1.0
