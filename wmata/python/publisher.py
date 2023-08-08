@@ -1,15 +1,11 @@
 import os
 import json
 import asyncio
-import warnings
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import requests
 from pyensign.events import Event
 from pyensign.ensign import Ensign
-
-# TODO Python>3.10 needs to ignore DeprecationWarning: There is no current event loop
-warnings.filterwarnings("ignore")
 
 # TODO: replace with YOU - your email and app details :)
 ME = "(https://rotational.io/data-playground/dc-metro, wmata@rotational.io)"
@@ -21,7 +17,9 @@ class MetroPublisher:
     real-time bus and rail predictions.
     """
 
-    def __init__(self, topic="metro-updates-json", wmata_key=None, interval=900, user=ME):
+    def __init__(
+        self, topic="metro-updates-json", wmata_key=None, interval=900, user=ME
+    ):
         """
         Parameters
         ----------
@@ -55,10 +53,7 @@ class MetroPublisher:
         if self.wmata_key is None:
             raise Exception("no WMATA key found; see README section on API key setup")
 
-        self.header = {
-            "User-Agent": user,
-            "api_key": self.wmata_key
-        }
+        self.header = {"User-Agent": user, "api_key": self.wmata_key}
 
         # NOTE: If you need an Ensign client_id & client_secret, register for a free
         # account at: https://rotational.app/register
@@ -70,7 +65,6 @@ class MetroPublisher:
         # Alternatively you can supply `client_id` & `client_secret` as string args, eg
         # self.ensign = Ensign(client_id="your_client_id", client_secret="your_secret")
 
-
     async def print_ack(self, ack):
         """
         Enable the Ensign server to notify the Publisher the event has been acknowledged
@@ -78,8 +72,7 @@ class MetroPublisher:
         This is optional for you, but can be very helpful for communication in
         asynchronous contexts!
         """
-        ts = datetime.fromtimestamp(
-            ack.committed.seconds + ack.committed.nanos / 1e9)
+        ts = datetime.fromtimestamp(ack.committed.seconds + ack.committed.nanos / 1e9)
         print(f"Event committed at {ts}")
 
     async def print_nack(self, nack):
@@ -105,7 +98,8 @@ class MetroPublisher:
         metro_events = message.get("BusIncidents", None)
         if metro_events is None:
             raise Exception(
-                "unexpected response from wmata request, no metro events found")
+                "unexpected response from wmata request, no metro events found"
+            )
 
         for metro_event in metro_events:
             data = {
@@ -147,7 +141,7 @@ class MetroPublisher:
         """
         Run the publisher forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.recv_and_publish())
+        asyncio.run(self.recv_and_publish())
 
 
 if __name__ == "__main__":
