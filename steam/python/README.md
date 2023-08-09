@@ -36,11 +36,7 @@ topics:create
 topics:read
 ```
 
-Alternatively, specify Ensign credentials in the environment.
-```bash
-$ export ENSIGN_CLIENT_ID=<your-client-id>
-$ export ENSIGN_CLIENT_SECRET=<your-client-secret>
-```
+Save your Ensign API key credentials to `secret/publish_creds.json` and `secret/subscribe_creds.json`.
 
 ## Run the Publisher
 In one terminal window, create a publisher and start publishing events with the following call:
