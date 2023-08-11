@@ -36,6 +36,8 @@ topics:create
 topics:read
 ```
 
+Save your Ensign API key credentials to `secret/publish_creds.json` and `secret/subscribe_creds.json`.
+
 Alternatively, specify Ensign credentials in the environment.
 ```bash
 $ export ENSIGN_CLIENT_ID=<your-client-id>

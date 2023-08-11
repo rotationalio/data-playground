@@ -22,7 +22,7 @@ class SteamPublisher:
     SteamPublisher queries the steam API and publishes events to Ensign.
     """
 
-    def __init__(self, topic="steam-stats-json", interval=900, steam_key=None, game_list_endpoint=GAME_LIST_ENDPOINT, base_uri=PLAYER_QUERY):
+    def __init__(self, topic="steam-stats-json", interval=900, steam_key=None, game_list_endpoint=GAME_LIST_ENDPOINT, base_uri=PLAYER_QUERY, ensign_creds=""):
         """
         Parameters
         ----------
@@ -58,7 +58,7 @@ class SteamPublisher:
 
         # Start a connection to the Ensign server. If you do not supply connection
         # details, PyEnsign will read them from your environment variables.
-        self.ensign = Ensign()
+        self.ensign = Ensign(cred_path=ensign_creds)
 
         # Alternatively you can supply `client_id` & `client_secret` as string args, eg
         # self.ensign = Ensign(client_id="your_client_id", client_secret="your_secret")
@@ -154,16 +154,16 @@ class SteamPublisher:
                     on_nack=self.print_nack
                 )
 
-            # # sleep for a bit before we ping the API again
+            # sleep for a bit before we ping the API again
             await asyncio.sleep(self.interval)
 
     def run(self):
         """
         Run the steam publisher forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.recv_and_publish())
+        asyncio.run(self.recv_and_publish())
 
 
 if __name__ == "__main__":
-    publisher = SteamPublisher()
+    publisher = SteamPublisher(ensign_creds="secret/publish_creds.json")
     publisher.run()

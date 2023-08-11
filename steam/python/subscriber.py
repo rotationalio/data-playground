@@ -14,7 +14,7 @@ class SteamSubscriber:
     SteamSubscriber queries the SteamPublisher for events.
     """
 
-    def __init__(self, topic="steam-stats-json"):
+    def __init__(self, topic="steam-stats-json", ensign_creds=""):
         """
         Parameters
         ----------
@@ -24,13 +24,13 @@ class SteamSubscriber:
             be found at https://ensign.rotational.dev/getting-started/topics/
         """
         self.topic = topic
-        self.ensign = Ensign()
+        self.ensign = Ensign(cred_path=ensign_creds)
 
     def run(self):
         """
         Run the subscriber forever.
         """
-        asyncio.get_event_loop().run_until_complete(self.subscribe())
+        asyncio.run(self.subscribe())
 
     async def handle_event(self, event):
         """
@@ -51,10 +51,10 @@ class SteamSubscriber:
         Subscribe to SteamPublisher events from Ensign
         """
         id = await self.ensign.topic_id(self.topic)
-        await self.ensign.subscribe(id, on_event=self.handle_event)
-        await asyncio.Future()
+        async for event in self.ensign.subscribe(id):
+            await self.handle_event(event)
 
 
 if __name__ == "__main__":
-    subscriber = SteamSubscriber()
+    subscriber = SteamSubscriber(ensign_creds="secret/subscribe_creds.json")
     subscriber.run()
