@@ -1,5 +1,7 @@
+import os
 import json
 import asyncio
+
 import numpy as np
 from pyensign.ensign import Ensign
 
@@ -32,7 +34,7 @@ class EarthquakeAnalyzer:
 
     def _load_keys(self):
         try:
-            f = open("client.json")
+            f = open(os.path.join("earthquakes","client.json"))
             return json.load(f)
         except Exception as e:
             raise OSError(f"unable to load Ensign API keys from file: ", e)
