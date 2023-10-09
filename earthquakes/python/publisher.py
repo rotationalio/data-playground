@@ -1,3 +1,4 @@
+import os
 import json
 import asyncio
 from datetime import datetime, timedelta
@@ -44,11 +45,19 @@ class EarthquakePublisher:
         # at: https://rotational.app/register
 
         # Start a connection to the Ensign server. If you do not supply connection
-        # details, PyEnsign will read them from your environment variables.
-        self.ensign = Ensign()
+        # details, PyEnsign will attempt to read them from your environment variables.
+        keys = self._load_keys()
+        self.ensign = Ensign(
+            client_id=keys["ClientID"],
+            client_secret=keys["ClientSecret"]
+        )
 
-        # Alternatively you can supply `client_id` & `client_secret` as string args, eg
-        # self.ensign = Ensign(client_id="your_client_id", client_secret="your_secret")
+    def _load_keys(self):
+        try:
+            f = open(os.path.join("earthquakes", "client.json"))
+            return json.load(f)
+        except Exception as e:
+            raise OSError(f"unable to load Ensign API keys from file: ", e)
 
     async def print_ack(self, ack):
         """

@@ -27,7 +27,10 @@ topics:create
 topics:read
 ```
 
-Alternatively, specify Ensign credentials in the environment.
+Download your `client.json` file from the Ensign dashboard, and add it to the `earthquakes/` directory. Make sure that `client.json` is listed in the repository's `.gitignore` file.
+
+
+Alternatively, you can specify Ensign credentials in the environment.
 ```
 $ export ENSIGN_CLIENT_ID=<your-client-id>
 $ export ENSIGN_CLIENT_SECRET=<your-client-secret>
