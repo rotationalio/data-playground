@@ -24,8 +24,18 @@ class EarthquakeAnalyzer:
             The name of the topic you wish to subscribe to.
         """
         self.topic = topic
-        self.ensign = Ensign()
-        self.window = [0,0,0,0,0]
+        keys = self._load_keys()
+        self.ensign = Ensign(
+            client_id=keys["ClientID"],
+            client_secret=keys["ClientSecret"]
+        )
+
+    def _load_keys(self):
+        try:
+            f = open("client.json")
+            return json.load(f)
+        except Exception as e:
+            raise OSError(f"unable to load Ensign API keys from file: ", e)
 
     async def replay(self, slice=False, sample_size=100):
         """
