@@ -31,7 +31,7 @@ class EarthquakeSubscriber:
 
     def _load_keys(self):
         try:
-            f = open(os.path.join("earthquakes", "client.json"))
+            f = open(os.path.join("..", "client.json"))
             return json.load(f)
         except Exception as e:
             raise OSError(f"unable to load Ensign API keys from file: ", e)
