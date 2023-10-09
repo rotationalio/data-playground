@@ -70,6 +70,10 @@ class EarthquakeAnalyzer:
 # Helper Methods
 ################################################################
 
+async def test_replay():
+    m = EarthquakeAnalyzer()
+    async for e in m.replay():
+        print(e)
 
 def update_avg(window):
     """
@@ -78,7 +82,6 @@ def update_avg(window):
     """
     n = len(window)
     return np.convolve(window, np.ones(n)/n, mode="valid")[0]
-
 
 async def analyze():
     """
@@ -98,11 +101,6 @@ async def analyze():
 
 if __name__ == "__main__":
 
-    async def test_replay():
-        m = EarthquakeAnalyzer()
-        async for e in m.replay():
-            print(e)
     asyncio.run(test_replay())
-
 
     # asyncio.run(analyze())
