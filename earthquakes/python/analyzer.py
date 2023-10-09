@@ -78,7 +78,7 @@ async def test_replay():
 def update_avg(window):
     """
     Update the running average based on a sliding window of values
-    that we're storing on the class
+    provided as an argument
     """
     n = len(window)
     return np.convolve(window, np.ones(n)/n, mode="valid")[0]
