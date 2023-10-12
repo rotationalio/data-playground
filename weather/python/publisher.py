@@ -10,21 +10,12 @@ from pyensign.ensign import Ensign
 # TODO: replace with YOU - your email and app details :)
 ME = "(https://rotational.io/data-playground/noaa/, weather@rotational.io)"
 
-# TODO: these are memorable for ME. Replace with the locations of interest to YOU
-LOCS = {
-    "north_pole": {"lat": "64.7511", "long": "-147.3494"},
-    "cafe_du_monde": {"lat": "29.957684", "long": "-90.061892"},
-    "los_alamos": {"lat": "35.897123", "long": "-106.278471"},
-    "case_western": {"lat": "41.504245", "long": "-81.608319"},
-}
-
-
 class WeatherPublisher:
     """
     WeatherPublisher queries an API for weather updates and publishes events to Ensign.
     """
 
-    def __init__(self, topic="noaa-reports-json", interval=60, locations=LOCS, user=ME):
+    def __init__(self, topic="noaa-reports-json", interval=60, user=ME):
         """
         Initialize a WeatherPublisher by specifying a topic, locations, and other user-
         defined parameters.
@@ -39,10 +30,6 @@ class WeatherPublisher:
         interval : int, default: 60
             The number of seconds to wait between API calls so that you do not anger
             the weather API gods
-
-        locations : dict
-            A dictionary expressing the locations to retrieve weather details for.
-            Note that these should all be in the USA since NOAA is located in the US :)
 
         user : str
             When querying the NOAA API, as a courtesy, they like you to identify your
