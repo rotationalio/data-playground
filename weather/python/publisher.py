@@ -1,3 +1,4 @@
+import os
 import json
 import asyncio
 from datetime import datetime
@@ -49,7 +50,7 @@ class WeatherPublisher:
         """
         self.topic = topic
         self.interval = interval
-        self.locations = locations
+        self.locations = self._load_cities()
         self.url = "https://api.weather.gov/points/"
         self.user = {"User-Agent": user}
         self.datatype = "application/json"
@@ -63,6 +64,20 @@ class WeatherPublisher:
 
         # Alternatively you can supply `client_id` & `client_secret` as string args, eg
         # self.ensign = Ensign(client_id="your_client_id", client_secret="your_secret")
+
+    def _load_cities(self):
+        cities = dict()
+        try:
+            f = open(os.path.join("cities.json"))
+            json_lines = json.load(f)
+            for l in json_lines:
+                cities[l["city"]] = {
+                    "lat": str(l["latitude"]),
+                    "long": str(l["longitude"])
+                }
+            return cities
+        except Exception as e:
+            raise OSError(f"unable to load cities from file: ", e)
 
     async def print_ack(self, ack):
         """
