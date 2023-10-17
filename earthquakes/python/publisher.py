@@ -4,6 +4,7 @@ import asyncio
 from datetime import datetime, timedelta
 
 import requests
+from requests import HTTPError, ConnectionError
 from pyensign.events import Event
 from pyensign.ensign import Ensign
 
@@ -48,8 +49,7 @@ class EarthquakePublisher:
         # details, PyEnsign will attempt to read them from your environment variables.
         keys = self._load_keys()
         self.ensign = Ensign(
-            client_id=keys["ClientID"],
-            client_secret=keys["ClientSecret"]
+            client_id=keys["ClientID"], client_secret=keys["ClientSecret"]
         )
 
     def _load_keys(self):
@@ -140,7 +140,15 @@ class EarthquakePublisher:
 
         while True:
             query = self.compose_query()
-            response = requests.get(query).json()
+
+            try:
+                response = requests.get(query).json()
+            except ConnectionError as e:
+                print(e)
+                continue
+            except HTTPError as e:
+                print(e)
+                continue
 
             # unpack the API response and parse it into events
             events = self.unpack_usgs_response(response)

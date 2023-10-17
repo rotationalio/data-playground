@@ -3,6 +3,7 @@ import asyncio
 from datetime import datetime
 
 import requests
+from requests.exceptions import HTTPError, ConnectionError
 from pyensign.events import Event
 from pyensign.ensign import Ensign
 
@@ -129,13 +130,34 @@ class WeatherPublisher:
 
                 # If successful, the initial response returns a link you can use to
                 # retrieve the full hourly forecast
-                response = requests.get(query).json()
+                try:
+                    response = requests.get(query).json()
+                except ConnectionError as e:
+                    print(e)
+                    break
+                except HTTPError as e:
+                    print(e)
+                    continue
+
                 forecast_url = self.parse_forecast_link(response)
-                forecast = requests.get(forecast_url).json()
+
+                try:
+                    forecast = requests.get(forecast_url).json()
+                except ConnectionError as e:
+                    print(e)
+                    break
+                except HTTPError as e:
+                    print(e)
+                    continue
 
                 # After we retrieve and unpack the full hourly forecast, we can publish
                 # each period of the forecast as a new event
-                events = self.unpack_noaa_response(forecast)
+                try:
+                    events = self.unpack_noaa_response(forecast)
+                except Exception as e:
+                    print(e)
+                    continue
+
                 for event in events:
                     await self.ensign.publish(
                         self.topic,
@@ -182,7 +204,9 @@ class WeatherPublisher:
         """
         properties = message.get("properties", None)
         if properties is None:
-            raise Exception("unexpected response from forecast request, no properties")
+            raise RuntimeError(
+                "unexpected response from forecast request, no properties"
+            )
 
         periods = properties.get("periods", None)
         if periods is None:
