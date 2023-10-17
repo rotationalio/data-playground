@@ -204,9 +204,7 @@ class WeatherPublisher:
         """
         properties = message.get("properties", None)
         if properties is None:
-            raise RuntimeError(
-                "unexpected response from forecast request, no properties"
-            )
+            raise Exception("unexpected response from forecast request, no properties")
 
         periods = properties.get("periods", None)
         if periods is None:
